@@ -12,6 +12,14 @@ const migrateRoutes = require('./routes/migrateRoutes');
 
 dotenv.config();
 
+console.log("=== Active Environment Variable Keys ===");
+console.log(Object.keys(process.env).filter(k => 
+  !k.toLowerCase().includes('pass') && 
+  !k.toLowerCase().includes('secret') && 
+  !k.toLowerCase().includes('key')
+));
+console.log("========================================");
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
