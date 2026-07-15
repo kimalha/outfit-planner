@@ -193,7 +193,7 @@ export default function CreatePostModal({ onClose, clothes: propsClothes }) {
     }
 
     createPost({
-      userId: 'user_1',
+      userId: profile?.id || 'user_1',
       photo: preview,
       caption: caption.trim(),
       outfitId: selectedOutfit ? selectedOutfit.id : null,

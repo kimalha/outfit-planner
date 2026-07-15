@@ -38,8 +38,8 @@ export default function MyPostsSection({ clothes, setPage }) {
   const [previewOutfit, setPreviewOutfit] = useState(null);
 
   // Filter posts that belong to the current user
-  const currentUserId = 'user_1'; // Same as CreatePostModal — single source of truth
-  const myPosts = posts.filter(p => p.userId === currentUserId);
+  const currentUserId = profile?.id;
+  const myPosts = posts.filter(p => String(p.userId) === String(currentUserId));
 
   return (
     <div className="flex flex-col gap-4">

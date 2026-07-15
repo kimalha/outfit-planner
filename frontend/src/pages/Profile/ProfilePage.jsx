@@ -73,7 +73,7 @@ export default function ProfilePage({ setPage }) {
   // Dynamic counts
   const outfitsCount = clothes.length;
   const favoritesCount = clothes.filter(c => c.is_favorite === 1 || c.is_favorite === true).length;
-  const postsCount = posts.filter(p => p.userId === "user_1").length;
+  const postsCount = posts.filter(p => String(p.userId) === String(profile?.id)).length;
 
   const stats = [
     { label: "OUTFITS", val: outfitsCount },
