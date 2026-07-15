@@ -19,6 +19,7 @@ const getCategories = async (req, res) => {
             data: rows
         });
     } catch (error) {
+        console.error("Get categories error:", error);
         res.status(500).json({
             success: false,
             message: 'Gagal mengambil data kategori',

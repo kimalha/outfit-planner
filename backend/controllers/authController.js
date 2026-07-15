@@ -14,6 +14,7 @@ const register = async (req, res) => {
         );
         res.status(201).json({ success: true, message: 'User berhasil didaftarkan' });
     } catch (error) {
+        console.error("Register error:", error);
         res.status(500).json({ success: false, error: error.message });
     }
 };
@@ -39,6 +40,7 @@ const login = async (req, res) => {
             user: { id: user.id, username: user.username, email: user.email, bio: user.bio, avatar: user.avatar }
         });
     } catch (error) {
+        console.error("Login error:", error);
         res.status(500).json({ success: false, error: error.message });
     }
 };
