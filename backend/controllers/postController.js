@@ -1,4 +1,5 @@
 const db = require('../config/db');
+const cloudinary = require('cloudinary').v2;
 
 // @desc    Ambil semua postingan komunitas
 // @route   GET /api/posts
@@ -66,10 +67,42 @@ const createPost = async (req, res) => {
     if (!photo) {
         return res.status(400).json({ success: false, message: 'Foto postingan wajib diisi!' });
     }
+
+    let photoUrl = photo;
+
+    // Upload to Cloudinary if it's a base64 Data URL
+    if (photo.startsWith('data:image/')) {
+        const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+        const apiKey = process.env.CLOUDINARY_API_KEY;
+        const apiSecret = process.env.CLOUDINARY_API_SECRET;
+
+        if (cloudName && apiKey && apiSecret) {
+            cloudinary.config({
+                cloud_name: cloudName,
+                api_key: apiKey,
+                api_secret: apiSecret
+            });
+            try {
+                const result = await cloudinary.uploader.upload(photo, {
+                    folder: 'posts'
+                });
+                photoUrl = result.secure_url;
+                console.log("[Cloudinary] Post photo upload success:", photoUrl);
+            } catch (err) {
+                console.error("[Cloudinary] Post photo upload failed:", err);
+                if (process.env.NODE_ENV === 'production') {
+                    return res.status(500).json({ success: false, message: 'Gagal mengupload foto postingan ke Cloudinary di production!' });
+                }
+            }
+        } else if (process.env.NODE_ENV === 'production') {
+            return res.status(400).json({ success: false, message: 'Cloudinary credentials tidak diset di production!' });
+        }
+    }
+
     try {
         const [result] = await db.query(
             'INSERT INTO posts (user_id, photo, caption, outfit_id, location) VALUES (?, ?, ?, ?, ?)',
-            [userId, photo, caption || null, outfitId || null, location || null]
+            [userId, photoUrl, caption || null, outfitId || null, location || null]
         );
         res.status(201).json({
             success: true,
@@ -77,6 +110,7 @@ const createPost = async (req, res) => {
             data: { id: result.insertId }
         });
     } catch (error) {
+        console.error("Create post database error:", error);
         res.status(500).json({ success: false, error: error.message });
     }
 };
