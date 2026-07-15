@@ -39,7 +39,12 @@ export default function MyPostsSection({ clothes, setPage }) {
 
   // Filter posts that belong to the current user
   const currentUserId = profile?.id;
-  const myPosts = posts.filter(p => String(p.userId) === String(currentUserId));
+  console.log("[MyPostsSection Debug] profile.id:", currentUserId, "posts:", posts);
+  const myPosts = posts.filter(p => {
+    const isMatch = String(p.userId) === String(currentUserId);
+    console.log(`[MyPostsSection Debug] Comparing post ${p.id} userId ${p.userId} with current ${currentUserId} -> Match:`, isMatch);
+    return isMatch;
+  });
 
   return (
     <div className="flex flex-col gap-4">
