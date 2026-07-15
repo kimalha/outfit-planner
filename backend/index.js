@@ -12,6 +12,13 @@ const migrateRoutes = require('./routes/migrateRoutes');
 
 dotenv.config();
 
+const fs = require('fs');
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+    console.log("Created local uploads directory dynamically:", uploadsDir);
+}
+
 console.log("=== Active Environment Variable Keys ===");
 console.log(Object.keys(process.env).filter(k => 
   !k.toLowerCase().includes('pass') && 
