@@ -31,6 +31,18 @@ app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Mapping Endpoint API
+app.get('/api/debug-env', (req, res) => {
+    const keys = Object.keys(process.env).map(key => {
+        const lowerKey = key.toLowerCase();
+        let value = process.env[key];
+        if (lowerKey.includes('pass') || lowerKey.includes('secret') || lowerKey.includes('key') || lowerKey.includes('token')) {
+            value = '***MASKED***';
+        }
+        return { key, value };
+    });
+    res.json({ success: true, env: keys });
+});
+
 app.use('/api/clothes', clothesRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/plans', planRoutes);
